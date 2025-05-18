@@ -114,38 +114,50 @@ const FilePreview = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {files.map((file, index) => (
+                  {files?.map((file, index) => (
                     <tr key={index} className="text-sm">
-                      <td className="border px-3 py-2 truncate" title={file.data.name}>
-                        {file.data.name}
-                      </td>
-                      <td className="border px-3 py-2">{file.data.type}</td>
-                      <td className="border px-3 py-2">
-                        {(file.data.size / (1024 * 1024)).toFixed(2)} MB
-                      </td>
-                      <td className="border px-3 py-2">
-                        {new Date(file.data.createdAt).toLocaleString()}
+                      <td
+                        className="border px-3 py-2 truncate"
+                        title={file?.data?.name || "Unknown"}
+                      >
+                        {file?.data?.name || "Unknown"}
                       </td>
                       <td className="border px-3 py-2">
-                        {file.data.type.startsWith("image") && (
+                        {file?.data?.type || "Unknown"}
+                      </td>
+                      <td className="border px-3 py-2">
+                        {file?.data?.size
+                          ? (file.data.size / (1024 * 1024)).toFixed(2) + " MB"
+                          : "Unknown"}
+                      </td>
+                      <td className="border px-3 py-2">
+                        {file?.data?.createdAt
+                          ? new Date(file.data.createdAt).toLocaleString()
+                          : "Unknown"}
+                      </td>
+                      <td className="border px-3 py-2">
+                        {file?.data?.type?.startsWith("image") && (
                           <img
-                            src={file.path}
-                            alt={file.data.name}
+                            src={file?.path}
+                            alt={file?.data?.name || "File"}
                             className="h-16 w-16 object-cover"
                           />
                         )}
-                        {file.data.type.startsWith("video") && (
+                        {file?.data?.type?.startsWith("video") && (
                           <video
-                            src={file.path}
+                            src={file?.path}
                             className="h-16 w-16 object-cover"
                             controls
                           />
+                        )}
+                        {(!file?.data?.type || (!file?.data?.type?.startsWith("image") && !file?.data?.type?.startsWith("video"))) && (
+                          <span>No preview</span>
                         )}
                       </td>
                       <td className="border px-3 py-2">
                         <button
                           onClick={() =>
-                            handleDownload(file.path, file.data.name)
+                            handleDownload(file?.path, file?.data.name)
                           }
                           className="bg-blue-500 text-white py-1 px-2 rounded text-xs sm:text-sm"
                         >
@@ -166,24 +178,24 @@ const FilePreview = () => {
                             <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                               <div className="py-1" role="none">
                                 <button
-                                  onClick={() => handleDownloadQR(file.path)}
+                                  onClick={() => handleDownloadQR(file?.path)}
                                   className="text-gray-700 block px-2 py-1 text-xs sm:text-sm w-full text-left"
-                                  title="Download QR code for this file"
+                                  title="Download QR code for this file?"
                                 >
                                   <div className="flex items-center">
                                     <FaDownload className="mr-1" /> Download QR
                                   </div>
                                   <div
                                     ref={(el) =>
-                                      (qrCodeRef.current[file.path] = el)
+                                      (qrCodeRef.current[file?.path] = el)
                                     }
                                     style={{ display: "none" }}
                                   >
-                                    <QRCode value={file.path} />
+                                    <QRCode value={file?.path} />
                                   </div>
                                 </button>
                                 <button
-                                  onClick={() => handleCopyUrl(file.path)}
+                                  onClick={() => handleCopyUrl(file?.path)}
                                   className="text-gray-700 block px-2 py-1 text-xs sm:text-sm w-full text-left"
                                   title="Copy URL to clipboard"
                                 >
@@ -205,30 +217,30 @@ const FilePreview = () => {
                         </div>
                       </td>
                       <td className="border px-2 py-2">
-                      <div className="flex space-x-2">
-                        <FacebookShareButton
-                          url={file.path}
-                          className="w-full text-left"
-                          title="Share on Facebook"
-                        >
-                          <FaFacebook className="text-blue-600" size={24}/>
-                        </FacebookShareButton>
-                        <TwitterShareButton
-                          url={file.path}
-                          className="w-full text-left"
-                          title="Share on Twitter"
-                        >
-                          <FaTwitter className="text-blue-400" size={24}/>
-                        </TwitterShareButton>
-                        <WhatsappShareButton
-                          url={file.path}
-                          className="w-full text-left"
-                          title="Share on WhatsApp"
-                        >
-                          <FaWhatsapp className="text-green-500" size={24}/>
-                        </WhatsappShareButton>
-                      </div>
-                    </td>
+                        <div className="flex space-x-2">
+                          <FacebookShareButton
+                            url={file?.path}
+                            className="w-full text-left"
+                            title="Share on Facebook"
+                          >
+                            <FaFacebook className="text-blue-600" size={24} />
+                          </FacebookShareButton>
+                          <TwitterShareButton
+                            url={file?.path}
+                            className="w-full text-left"
+                            title="Share on Twitter"
+                          >
+                            <FaTwitter className="text-blue-400" size={24} />
+                          </TwitterShareButton>
+                          <WhatsappShareButton
+                            url={file?.path}
+                            className="w-full text-left"
+                            title="Share on WhatsApp"
+                          >
+                            <FaWhatsapp className="text-green-500" size={24} />
+                          </WhatsappShareButton>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

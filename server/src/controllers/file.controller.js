@@ -1,5 +1,4 @@
 import { File } from "../models/file.models.js";
-import s3 from "../config/s3.js";
 import bcrypt from "bcryptjs";
 import AWS from "aws-sdk";
 import nodemailer from "nodemailer";
@@ -12,8 +11,12 @@ const uploadFiles = async (req, res) => {
     return res.status(400).json({ error: "No files uploaded" });
   }
 
-  const { isPassword, password, hasExpiry, expiresAt, customFileName, userId } =
-    req.body;
+  const { isPassword, password, hasExpiry, expiresAt, customFileName, userId } = req.body;
+
+  // If no userId is provided, return an error
+  if (!userId) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
 
   try {
     const s3 = new AWS.S3({
@@ -22,6 +25,7 @@ const uploadFiles = async (req, res) => {
       region: process.env.AWS_REGION,
     });
     const file = req.file;
+    console.log("file: ", file);
 
     // Extract extension from original filename
     const originalName = file.originalname;

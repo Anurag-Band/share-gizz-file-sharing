@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useDropzone } from "react-dropzone";
 import { uploadFile } from "../redux/slice/fileThunk";
@@ -15,6 +15,11 @@ const FileUpload = () => {
   const { loading, uploadProgress, estimatedTime } = useSelector(
     (state) => state.file
   );
+  const auth = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    console.log("Auth state:", auth);
+  }, [auth]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
@@ -30,9 +35,27 @@ const FileUpload = () => {
 
   const handleUpload = async () => {
     if (file) {
-      const response = await dispatch(uploadFile(file));
+      // Get user ID from auth state
+      const userId = auth.user?._id || auth.user?.id;
+
+      console.log("User ID for upload:", userId);
+
+      if (!userId) {
+        toast.error("You must be logged in to upload files");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("userId", userId);
+
+      const response = await dispatch(uploadFile(formData));
       if (response.error) {
-        toast.error("File upload failed!");
+        toast.error(
+          `File upload failed: ${
+            response.payload?.error || response.error.message || "Server error"
+          }`
+        );
       } else {
         navigate("/preview");
         toast.success("File uploaded successfully!");
@@ -42,14 +65,18 @@ const FileUpload = () => {
 
   return (
     <div className=" flex flex-col justify-between h-screen">
-       <header className="bg-gray-800 text-white py-4 px-20 flex justify-between items-center">
-    <div className="flex items-center">
-      
-     <Link to={'/'}><SiSharex className="h-8 w-8 mr-4"/></Link> 
-     <Link to={'/'}><h1 className="text-lg font-bold lg:text-2xl font-serif">Share Pod</h1></Link> 
-    </div>
-    
-  </header>
+      <header className="bg-gray-800 text-white py-4 px-20 flex justify-between items-center">
+        <div className="flex items-center">
+          <Link to={"/"}>
+            <SiSharex className="h-8 w-8 mr-4" />
+          </Link>
+          <Link to={"/"}>
+            <h1 className="text-lg font-bold lg:text-2xl font-serif">
+              Share Pod
+            </h1>
+          </Link>
+        </div>
+      </header>
       <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
         <div className="mb-4">
           <h2 className="text-xl font-bold mb-2">Upload Your File</h2>
@@ -88,7 +115,6 @@ const FileUpload = () => {
             >
               {uploadProgress}%
             </div>
-            
           </div>
         )}
         <ToastContainer />

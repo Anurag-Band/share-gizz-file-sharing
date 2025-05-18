@@ -1,12 +1,21 @@
-import multer from 'multer';
-import path from 'path';
+import multer from "multer";
+import path from "path";
 
 const storage = multer.memoryStorage();
 
 const allowedExtensions = [
-  '.jpg', '.jpeg', '.webp', '.png',
-  '.mp4', '.avi', '.mov', '.mkv', '.mk3d', '.mks', '.mka',
-  '.pdf'
+  ".jpg",
+  ".jpeg",
+  ".webp",
+  ".png",
+  ".mp4",
+  ".avi",
+  ".mov",
+  ".mkv",
+  ".mk3d",
+  ".mks",
+  ".mka",
+  ".pdf",
 ];
 
 const upload = multer({
@@ -18,7 +27,7 @@ const upload = multer({
       return cb(new Error(`❌ Unsupported file type: ${ext}`));
     }
     cb(null, true);
-  }
+  },
 });
 
 export default upload;
