@@ -15,7 +15,7 @@ import {
   FaEllipsisV,
   FaTrash,
 } from "react-icons/fa";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import Header from "./HeaderComp";
 import Footer from "./Footer";
@@ -25,6 +25,11 @@ const FilePreview = () => {
   const dispatch = useDispatch();
   const [openDropdown, setOpenDropdown] = useState(null);
   const qrCodeRef = useRef({});
+
+  // Log files for debugging
+  useEffect(() => {
+    console.log("Files in preview:", files);
+  }, [files]);
 
   const handleCopyUrl = (url) => {
     navigator.clipboard.writeText(url);

@@ -33,7 +33,24 @@ const fileSlice = createSlice({
       })
       .addCase(uploadFile.fulfilled, (state, action) => {
         state.loading = false;
-        state.files.push({ data: action.payload.data, path: action.payload.path });
+        // If action.payload is already in the correct format, use it directly
+        if (action.payload && action.payload.data && action.payload.path) {
+          state.files.push(action.payload);
+        }
+        // Otherwise, try to construct a valid file object
+        else if (action.payload) {
+          const fileData = {
+            data: {
+              ...action.payload,
+              name: action.payload.name || "Unknown",
+              type: action.payload.type || "Unknown",
+              size: action.payload.size || 0,
+              createdAt: action.payload.createdAt || new Date().toISOString()
+            },
+            path: action.payload.path || ""
+          };
+          state.files.push(fileData);
+        }
         localStorage.setItem('files', JSON.stringify(state.files));
       })
       .addCase(uploadFile.rejected, (state, action) => {

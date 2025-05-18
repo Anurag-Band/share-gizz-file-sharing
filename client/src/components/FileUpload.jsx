@@ -45,21 +45,39 @@ const FileUpload = () => {
         return;
       }
 
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("userId", userId);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("userId", userId);
 
-      const response = await dispatch(uploadFile(formData));
-      if (response.error) {
-        toast.error(
-          `File upload failed: ${
-            response.payload?.error || response.error.message || "Server error"
-          }`
-        );
-      } else {
-        navigate("/preview");
-        toast.success("File uploaded successfully!");
+        // Add additional metadata
+        formData.append("customFileName", file.name);
+
+        console.log("Uploading file:", file.name, "Size:", file.size, "Type:", file.type);
+
+        const response = await dispatch(uploadFile(formData));
+
+        if (response.error) {
+          toast.error(
+            `File upload failed: ${
+              response.payload?.error || response.error.message || "Server error"
+            }`
+          );
+        } else {
+          console.log("Upload successful, response:", response);
+          toast.success("File uploaded successfully!");
+
+          // Short delay to ensure state is updated
+          setTimeout(() => {
+            navigate("/preview");
+          }, 500);
+        }
+      } catch (error) {
+        console.error("Upload error:", error);
+        toast.error("An unexpected error occurred during upload");
       }
+    } else {
+      toast.warning("Please select a file to upload");
     }
   };
 

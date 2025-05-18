@@ -30,12 +30,28 @@ export const uploadFile = createAsyncThunk(
 
       // Check if response and response.data exist before using them
       if (response && response.data) {
-        localStorage.setItem("data", JSON.stringify(response.data));
-        
-        // Only set downloadContent if it exists in the response
-        if (response.data.downloadedContent) {
-          localStorage.setItem("downloadContent", response.data.downloadedContent);
-        }
+        // Get the file object from the FormData
+        const fileObj = formData.get('file');
+
+        // Create a more complete file object with the response data and file information
+        const fileData = {
+          data: {
+            name: fileObj.name,
+            type: fileObj.type,
+            size: fileObj.size,
+            createdAt: new Date().toISOString(),
+            fileId: response.data.fileId,
+            ...response.data
+          },
+          path: URL.createObjectURL(fileObj) // Create a local URL for preview
+        };
+
+        // Store the file data in localStorage
+        const existingFiles = JSON.parse(localStorage.getItem('files')) || [];
+        existingFiles.push(fileData);
+        localStorage.setItem('files', JSON.stringify(existingFiles));
+
+        return fileData;
       }
 
       return response.data;
