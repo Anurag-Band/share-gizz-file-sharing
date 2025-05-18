@@ -11,8 +11,15 @@ const FileShow = () => {
   const [shareFile, setShareFile] = useState(null); // For the share modal
 
   useEffect(() => {
-    if (user && user._id) {
-      dispatch(getUserFiles(user._id));
+    if (user) {
+      // Handle different user ID formats
+      const userId = user.id || user._id;
+      if (userId) {
+        console.log("Dispatching getUserFiles with ID:", userId);
+        dispatch(getUserFiles(userId));
+      } else {
+        console.error("No valid user ID found in user object:", user);
+      }
     }
   }, [user, dispatch]);
 

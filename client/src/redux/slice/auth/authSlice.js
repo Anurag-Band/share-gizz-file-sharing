@@ -48,14 +48,17 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = false;        
-        state.user = action.payload.user;
+        state.loading = false;
+        // Handle different response formats
+        const userData = action.payload.user || action.payload;
+        state.user = userData;
         state.isLoggedIn = true;
-        localStorage.setItem('user', JSON.stringify(action.payload.user));
+        localStorage.setItem('user', JSON.stringify(userData));
+        console.log("Login successful, user data:", userData);
       })
       .addCase(loginUser.rejected, (state, action) => {
         console.log(action);
-        
+
         state.loading = false;
         state.error = action.payload || 'Login failed';
       })
@@ -96,7 +99,7 @@ const authSlice = createSlice({
         .addCase(getUser.fulfilled,(state,action)=>{
             state.loading=false;
             console.log(action.payload);
-            
+
             state.user=action.payload;
             // localStorage.setItem('user',JSON.stringify(action.payload));
         })
@@ -104,7 +107,7 @@ const authSlice = createSlice({
             state.loading=false;
             state.error=action.payload?.error || 'Get user failed';
         })
-     
+
 
   }
 });

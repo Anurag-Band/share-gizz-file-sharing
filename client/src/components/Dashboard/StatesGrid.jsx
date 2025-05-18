@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "../../redux/slice/auth/authThunk";
 import { FaFileUpload, FaDownload, FaVideo, FaImage, FaFileAlt, FaClock } from "react-icons/fa";
@@ -10,10 +10,16 @@ const StatsGrid = () => {
   const hasFetched = useRef(false);
 
   useEffect(() => {
-    if (user && (user.id || user._id) && !hasFetched.current) {
+    if (user && !hasFetched.current) {
+      // Handle different user ID formats
       const userId = user.id || user._id;
-      dispatch(getUser(userId));
-      hasFetched.current = true;
+      if (userId) {
+        console.log("Dispatching getUser with ID:", userId);
+        dispatch(getUser(userId));
+        hasFetched.current = true;
+      } else {
+        console.error("No valid user ID found in user object:", user);
+      }
     }
   }, [user, dispatch]);
 

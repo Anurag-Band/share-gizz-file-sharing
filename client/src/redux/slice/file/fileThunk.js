@@ -149,10 +149,12 @@ export const verifyFilePassword = createAsyncThunk("file/verifyPassword", async 
 // get User files
 export const getUserFiles = createAsyncThunk("file/getUserFiles", async (userId, { rejectWithValue }) => {
   try {
-    console.log(userId);
-    const res = await axiosInstance.get(`files/getUserFiles/${userId}`);
+    console.log("Fetching files for user ID:", userId);
+    // Fix the API endpoint to match the server route
+    const res = await axiosInstance.get(`/files/getUserFiles/${userId}`);
     return res.data;
   } catch (err) {
-    return rejectWithValue(err.response?.data);
+    console.error("Error fetching user files:", err);
+    return rejectWithValue(err.response?.data || "Failed to fetch user files");
   }
 });
