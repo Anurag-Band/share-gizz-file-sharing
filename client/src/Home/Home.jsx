@@ -34,11 +34,13 @@ const Home = () => {
       >
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center">
-            <h1 className={`text-3xl font-bold bg-clip-text text-transparent ${
-              scrolled
-                ? "bg-gradient-to-r from-blue-500 to-indigo-600"
-                : "bg-gradient-to-r from-white to-blue-100"
-            }`}>
+            <h1
+              className={`text-3xl font-bold bg-clip-text text-transparent ${
+                scrolled
+                  ? "bg-gradient-to-r from-blue-500 to-indigo-600"
+                  : "bg-gradient-to-r from-white to-blue-100"
+              }`}
+            >
               Share Gizz
             </h1>
             <p
@@ -120,12 +122,6 @@ const Home = () => {
                   className="inline-block bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-medium px-8 py-4 rounded-full hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300"
                 >
                   Get Started
-                </Link>
-                <Link
-                  to="/about"
-                  className="inline-block bg-white text-gray-700 font-medium px-8 py-4 rounded-full border border-gray-300 hover:border-blue-500 hover:text-blue-600 hover:shadow-md transition-all duration-300"
-                >
-                  Learn More
                 </Link>
               </div>
             </div>
@@ -338,8 +334,8 @@ const Home = () => {
                 Share Gizz
               </h2>
               <p className="text-gray-400 mb-6 max-w-md">
-                Share Gizz is the easiest way to share files with anyone. Secure,
-                fast, and designed for seamless collaboration.
+                Share Gizz is the easiest way to share files with anyone.
+                Secure, fast, and designed for seamless collaboration.
               </p>
               <div className="flex space-x-4">
                 <a
