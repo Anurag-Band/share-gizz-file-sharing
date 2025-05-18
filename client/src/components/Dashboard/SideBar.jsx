@@ -1,16 +1,17 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
-const Sidebar = ({ sidebarOpen,setActiveTab,activeTab }) =>{
+const Sidebar = ({ sidebarOpen, setActiveTab, activeTab }) => {
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
+
     const tabs = [
-        { name: "Home", icon: "🏠", id: "home" },
+        { name: "Dashboard", icon: "🏠", id: "home" },
         { name: "Upload Files", icon: "📤", id: "upload" },
         { name: "Settings", icon: "⚙️", id: "settings" },
         { name: "Logout", icon: "🚪", id: "logout" },
     ];
- 
+
 
 
 
@@ -23,6 +24,11 @@ const Sidebar = ({ sidebarOpen,setActiveTab,activeTab }) =>{
     <div className="flex flex-col h-full">
       <div className="px-6 py-4 text-2xl font-bold border-b">Dashboard</div>
       <nav className="flex-1 px-4 py-6 space-y-4">
+        <Link to="/" className="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100 w-full">
+          <span className="mr-3">🏡</span>
+          <span className="text-lg font-medium">Home Page</span>
+        </Link>
+
         {tabs.map((tab) => (
           <button
             key={tab.id}

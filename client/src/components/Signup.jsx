@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { registerUser } from '../redux/slice/auth/authThunk';
 
@@ -24,7 +24,7 @@ const Signup = () => {
 
   const handleSubmit=async (e)=>{
     e.preventDefault();
-    
+
     if(!formData.email || !formData.fullname || !formData.password){
       toast.error('Please fill all the fields');
       return;
@@ -37,11 +37,11 @@ const Signup = () => {
         toast.error(result.payload);
       } else {
         toast.success('Registration successful');
-        navigate('/login');
+        navigate('/dashboard');
       }
     } catch (error) {
       toast.error('Error During Registration');
-      console.log(error);     
+      console.log(error);
     }
   }
   return (
@@ -106,14 +106,10 @@ const Signup = () => {
                   <span className="ml-3">{loading ? "Signing Up..." : "Sign Up"}</span>
                 </button>
                 <p className="mt-6 text-xs text-gray-600 text-center">
-                  I agree to abide by templatana's{' '}
-                  <a href="#" className="border-b border-gray-500 border-dotted">
-                    Terms of Service
-                  </a>{' '}
-                  and its{' '}
-                  <a href="#" className="border-b border-gray-500 border-dotted">
-                    Privacy Policy
-                  </a>
+                  Already have an account?{' '}
+                  <Link to="/login" className="text-indigo-500 hover:text-indigo-700 font-semibold">
+                    Login here
+                  </Link>
                 </p>
               </div>
             </div>

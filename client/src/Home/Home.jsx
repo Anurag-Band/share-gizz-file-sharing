@@ -8,14 +8,42 @@ import { TbUpload } from "react-icons/tb";
 import { FaFacebook, FaInstagram, FaLink, FaTwitter } from "react-icons/fa6";
 import { FaShareSquare } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Home = () => {
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+
   return (
     <div className="">
       {/* Header Section */}
-      <header className="bg-gray-800 text-white text-center py-4">
-        <h1 className="text-3xl font-bold">Share Pod</h1>
-        <p className="mt-2">Share files effortlessly, anywhere, anytime</p>
+      <header className="bg-gray-800 text-white py-4 px-4 md:px-8 lg:px-20">
+        <div className="container mx-auto flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">Share Pod</h1>
+            <p className="mt-1">Share files effortlessly, anywhere, anytime</p>
+          </div>
+          <div className="flex space-x-4">
+            {isLoggedIn ? (
+              <>
+                <Link to="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+                  Dashboard
+                </Link>
+                <Link to="/upload" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">
+                  Upload
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+                  Login
+                </Link>
+                <Link to="/signup" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
       </header>
 
       {/* Hero Section */}
@@ -95,7 +123,7 @@ const Home = () => {
       <section className="bg-blue-500 text-white text-center py-12 px-4">
         <h2 className="text-3xl font-bold mb-4">Ready to start sharing?</h2>
         <button className="bg-white text-blue-500 px-6 py-3 rounded-full hover:bg-gray-100">
-         <Link to={'/upload'}>Upload Your First File</Link> 
+         <Link to={'/upload'}>Upload Your First File</Link>
         </button>
       </section>
 

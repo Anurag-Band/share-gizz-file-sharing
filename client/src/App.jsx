@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useEffect } from "react";
 // import "./App.css";
 import Home from "./Home/Home";
 import FileUpload from "./components/FileUpload";
@@ -11,10 +9,9 @@ import Signup from "./components/Signup";
 import Dashboard from "./components/Dashboard/Dashboard";
 import { useDispatch } from "react-redux";
 import { loadUserFromStorage } from "./redux/slice/auth/authSlice";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -25,11 +22,34 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/upload" element={<FileUpload />} />
-        <Route path="/preview" element={<FilePreview />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={<Dashboard/>} />
+
+        {/* Protected Routes */}
+        <Route
+          path="/upload"
+          element={
+            <ProtectedRoute>
+              <FileUpload />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/preview"
+          element={
+            <ProtectedRoute>
+              <FilePreview />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );

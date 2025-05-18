@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { loginUser, registerUser } from '../redux/slice/auth/authThunk';
+import { loginUser } from '../redux/slice/auth/authThunk';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ const Login = () => {
 
   const handleSubmit=async (e)=>{
     e.preventDefault();
-    
+
     if(!formData.email || !formData.password){
       toast.error('Please fill all the fields');
       return;
@@ -34,16 +34,16 @@ const Login = () => {
     try {
       const result = await dispatch(loginUser(formData));
       console.log(result);
-      
+
       if (result.error) {
         toast.error(result.payload);
       } else {
         toast.success('Login successful');
-        navigate('/');
+        navigate('/dashboard');
       }
     } catch (error) {
       toast.error('Error During Login');
-      console.log(error);     
+      console.log(error);
     }
   }
   return (
@@ -63,7 +63,7 @@ const Login = () => {
             </h1>
             <div className="w-full flex-1 mt-8">
               <div className="mx-auto max-w-xs">
-               
+
                 <input
                   className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
                   type="email"
@@ -101,14 +101,10 @@ const Login = () => {
                   <span className="ml-3">{loading ? "Logging..." : "Login"}</span>
                 </button>
                 <p className="mt-6 text-xs text-gray-600 text-center">
-                  I agree to abide by templatana's{' '}
-                  <a href="#" className="border-b border-gray-500 border-dotted">
-                    Terms of Service
-                  </a>{' '}
-                  and its{' '}
-                  <a href="#" className="border-b border-gray-500 border-dotted">
-                    Privacy Policy
-                  </a>
+                  Don't have an account?{' '}
+                  <Link to="/signup" className="text-indigo-500 hover:text-indigo-700 font-semibold">
+                    Sign up here
+                  </Link>
                 </p>
               </div>
             </div>

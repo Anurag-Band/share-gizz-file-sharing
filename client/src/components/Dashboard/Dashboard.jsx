@@ -1,22 +1,39 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../redux/slice/auth/authSlice";
+import { toast } from "react-toastify";
 import Header from "./Header";
-import UsersTable from "./UsersTable";
 import Sidebar from "./SideBar";
 import StatsGrid from "./StatesGrid";
 import UserProfile from "./UserProfile";
 import UploadPage from "./UploadPage";
-import Setting from "./Setting";
 import FileShow from "./FileShow";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("home");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timeout = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timeout);
   }, []);
+
+  // Handle logout when the logout tab is selected
+  useEffect(() => {
+    if (activeTab === "logout") {
+      const logoutTimer = setTimeout(() => {
+        dispatch(logout());
+        toast.success("Logged out successfully");
+        navigate("/");
+      }, 1000);
+
+      return () => clearTimeout(logoutTimer);
+    }
+  }, [activeTab, dispatch, navigate]);
 
   if (loading) {
     return (
@@ -39,7 +56,7 @@ const Dashboard = () => {
           {activeTab === "profile" && <UserProfile />}
           {activeTab === "settings" && <UserProfile />}
           {activeTab === "logout" && <h1 className="text-3xl font-bold text-gray-800">Logging out...</h1>}
-          {activeTab === "home" && 
+          {activeTab === "home" &&
 
            <>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Dashboard Overview</h2>

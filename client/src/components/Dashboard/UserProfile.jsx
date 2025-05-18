@@ -1,12 +1,25 @@
-import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../redux/slice/auth/authSlice";
+import { toast } from "react-toastify";
+import { format } from "date-fns";
 
 const UserProfile = () => {
-  const user = {
-    name: "Prince Kumar",
-    email: "prince@example.com",
-    role: "Admin",
-    joined: "Jan 2024",
-    avatar: "https://i.pravatar.cc/100"
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    toast.success("Logged out successfully");
+    navigate("/");
+  };
+
+  const handleDeleteAccount = () => {
+    if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+      // TODO: Implement account deletion
+      toast.info("Account deletion functionality will be implemented soon");
+    }
   };
 
   return (
@@ -15,15 +28,17 @@ const UserProfile = () => {
 
       <div className="flex items-center space-x-6">
         <img
-          src={user.avatar}
+          src={user?.profilePic || "https://i.pravatar.cc/100"}
           alt="User Avatar"
           className="w-24 h-24 rounded-full shadow"
         />
         <div>
-          <h3 className="text-xl font-bold text-gray-900">{user.name}</h3>
-          <p className="text-gray-600">{user.email}</p>
-          <p className="text-sm text-gray-500">Role: {user.role}</p>
-          <p className="text-sm text-gray-500">Joined: {user.joined}</p>
+          <h3 className="text-xl font-bold text-gray-900">{user?.fullname || "User"}</h3>
+          <p className="text-gray-600">{user?.email || "No email provided"}</p>
+          <p className="text-sm text-gray-500">User ID: {user?.id || user?._id || "Unknown"}</p>
+          <p className="text-sm text-gray-500">
+            Joined: {user?.createdAt ? format(new Date(user.createdAt), 'MMM yyyy') : "Unknown"}
+          </p>
         </div>
       </div>
 
@@ -32,13 +47,13 @@ const UserProfile = () => {
         <div className="space-y-3">
           <button
             className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
-            onClick={() => alert("Logout clicked")}
+            onClick={handleLogout}
           >
             Logout
           </button>
           <button
             className="w-full px-4 py-2 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700"
-            onClick={() => confirm("Are you sure you want to delete your account?")}
+            onClick={handleDeleteAccount}
           >
             Delete Account
           </button>

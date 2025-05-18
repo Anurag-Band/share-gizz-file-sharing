@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useDropzone } from "react-dropzone";
 import { uploadFile } from "../redux/slice/fileThunk";
@@ -65,7 +65,7 @@ const FileUpload = () => {
 
   return (
     <div className=" flex flex-col justify-between h-screen">
-      <header className="bg-gray-800 text-white py-4 px-20 flex justify-between items-center">
+      <header className="bg-gray-800 text-white py-4 px-4 md:px-8 lg:px-20 flex justify-between items-center">
         <div className="flex items-center">
           <Link to={"/"}>
             <SiSharex className="h-8 w-8 mr-4" />
@@ -74,6 +74,11 @@ const FileUpload = () => {
             <h1 className="text-lg font-bold lg:text-2xl font-serif">
               Share Pod
             </h1>
+          </Link>
+        </div>
+        <div className="flex space-x-4">
+          <Link to="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+            Dashboard
           </Link>
         </div>
       </header>
