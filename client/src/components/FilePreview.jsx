@@ -14,11 +14,19 @@ import {
   FaCopy,
   FaEllipsisV,
   FaTrash,
+  FaFile,
+  FaFileImage,
+  FaFileVideo,
+  FaFilePdf,
+  FaFileAlt,
+  FaQrcode,
 } from "react-icons/fa";
 import { useRef, useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import Header from "./HeaderComp";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Link } from "react-router-dom";
 import Footer from "./Footer";
+import "./filePreview.css";
 
 const FilePreview = () => {
   const { files } = useSelector((state) => state.file);
@@ -94,102 +102,177 @@ const FilePreview = () => {
     setOpenDropdown(openDropdown === index ? null : index);
   };
 
-  return (
-    <>
-      <div className="flex flex-col h-screen justify-between">
-        <Header />
+  // Function to get the appropriate file icon based on file type
+  const getFileIcon = (fileType) => {
+    if (!fileType) return <FaFileAlt className="text-gray-500" size={24} />;
 
-        <div className="container mx-auto p-4 sm:p-6 lg:p-8 mt-6 bg-white rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-4">Uploaded Files</h2>
-          {files.length === 0 ? (
-            <p>No files uploaded yet.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white border border-gray-300">
+    if (fileType.startsWith("image/"))
+      return <FaFileImage className="text-green-500" size={24} />;
+    if (fileType.startsWith("video/"))
+      return <FaFileVideo className="text-purple-500" size={24} />;
+    if (fileType.includes("pdf"))
+      return <FaFilePdf className="text-red-500" size={24} />;
+
+    return <FaFile className="text-blue-500" size={24} />;
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-blue-600 to-indigo-800 text-white py-4 px-4 md:px-8 lg:px-20">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="flex items-center">
+            <Link to={"/"}>
+              <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                Share Gizz
+              </h1>
+            </Link>
+            <p className="ml-4 hidden md:block text-blue-100">
+              Share files effortlessly, anywhere, anytime
+            </p>
+          </div>
+          <div className="flex space-x-4">
+            <Link
+              to="/upload"
+              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-4 py-2 rounded-full font-medium transition-all duration-300"
+            >
+              Upload More
+            </Link>
+            <Link
+              to="/dashboard"
+              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-4 py-2 rounded-full font-medium transition-all duration-300"
+            >
+              Dashboard
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1 p-6 animate-fadeIn max-w-6xl mx-auto w-full">
+        <div className="flex items-center mb-6">
+          <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-700">
+            Your Uploaded Files
+          </h2>
+          <div className="ml-4 h-1 flex-grow bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"></div>
+        </div>
+
+        {files.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">
+              <FaFileAlt />
+            </div>
+            <h3 className="empty-state-text">No files uploaded yet</h3>
+            <Link to="/upload" className="empty-state-button">
+              Upload Your First File
+            </Link>
+          </div>
+        ) : (
+          <div className="bg-white rounded-2xl shadow-md p-6 overflow-visible">
+            <div className="custom-scrollbar overflow-visible">
+              <table className="modern-table overflow-visible">
                 <thead>
-                  <tr className="bg-gray-600 text-left">
-                    <th className="px-3 py-2">Filename</th>
-                    <th className="px-3 py-2">Content Type</th>
-                    <th className="px-3 py-2">Size</th>
-                    <th className="px-3 py-2">Uploaded</th>
-                    <th className="px-3 py-2">Preview</th>
-                    <th className="px-3 py-2">Download</th>
-                    <th className="px-3 py-2">Actions</th>
-                    <th className="px-3 py-2">Share</th>
+                  <tr>
+                    <th>File</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Uploaded</th>
+                    <th>Preview</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {files?.map((file, index) => (
-                    <tr key={index} className="text-sm">
-                      <td
-                        className="border px-3 py-2 truncate"
-                        title={file?.data?.name || "Unknown"}
-                      >
-                        {file?.data?.name || "Unknown"}
+                    <tr key={index}>
+                      <td>
+                        <div className="flex items-center">
+                          <div className="file-icon bg-blue-50 mr-3">
+                            {getFileIcon(file?.data?.type)}
+                          </div>
+                          <div
+                            className="truncate max-w-[200px]"
+                            title={file?.data?.name || "Unknown"}
+                          >
+                            {file?.data?.name || "Unknown"}
+                          </div>
+                        </div>
                       </td>
-                      <td className="border px-3 py-2">
-                        {file?.data?.type || "Unknown"}
+                      <td>
+                        <span className="px-2 py-1 bg-gray-100 text-xs text-gray-700 rounded">
+                          {file?.data?.type?.split("/")[1]?.toUpperCase() ||
+                            "Unknown"}
+                        </span>
                       </td>
-                      <td className="border px-3 py-2">
+                      <td>
                         {file?.data?.size
                           ? (file.data.size / (1024 * 1024)).toFixed(2) + " MB"
                           : "Unknown"}
                       </td>
-                      <td className="border px-3 py-2">
+                      <td>
                         {file?.data?.createdAt
                           ? new Date(file.data.createdAt).toLocaleString()
                           : "Unknown"}
                       </td>
-                      <td className="border px-3 py-2">
-                        {file?.data?.type?.startsWith("image") && (
-                          <img
-                            src={file?.path}
-                            alt={file?.data?.name || "File"}
-                            className="h-16 w-16 object-cover"
-                          />
-                        )}
-                        {file?.data?.type?.startsWith("video") && (
-                          <video
-                            src={file?.path}
-                            className="h-16 w-16 object-cover"
-                            controls
-                          />
-                        )}
-                        {(!file?.data?.type || (!file?.data?.type?.startsWith("image") && !file?.data?.type?.startsWith("video"))) && (
-                          <span>No preview</span>
-                        )}
-                      </td>
-                      <td className="border px-3 py-2">
-                        <button
-                          onClick={() =>
-                            handleDownload(file?.path, file?.data.name)
-                          }
-                          className="bg-blue-500 text-white py-1 px-2 rounded text-xs sm:text-sm"
-                        >
-                          <div className="flex items-center">
-                            <FaDownload className="mr-1" /> Download
+                      <td>
+                        {file?.data?.type?.startsWith("image") ? (
+                          <div className="file-preview-image">
+                            <img
+                              src={file?.path}
+                              alt={file?.data?.name || "File"}
+                              className="h-16 w-16 object-cover rounded"
+                            />
                           </div>
-                        </button>
+                        ) : file?.data?.type?.startsWith("video") ? (
+                          <div className="file-preview-image">
+                            <video
+                              src={file?.path}
+                              className="h-16 w-16 object-cover rounded"
+                              controls
+                            />
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-500">
+                            No preview
+                          </span>
+                        )}
                       </td>
-                      <td className="border px-3 py-2">
-                        <div className="relative inline-block text-left">
+                      <td>
+                        <div className="flex space-x-2">
                           <button
-                            onClick={() => toggleDropdown(index)}
-                            className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                            onClick={() =>
+                              handleDownload(file?.path, file?.data.name)
+                            }
+                            className="action-button bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-2 rounded-full"
+                            title="Download"
                           >
-                            <FaEllipsisV />
+                            <FaDownload size={16} />
                           </button>
-                          {openDropdown === index && (
-                            <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                              <div className="py-1" role="none">
+
+                          <button
+                            onClick={() => handleCopyUrl(file?.path)}
+                            className="action-button bg-gradient-to-r from-green-500 to-emerald-600 text-white p-2 rounded-full"
+                            title="Copy URL"
+                          >
+                            <FaCopy size={16} />
+                          </button>
+
+                          <div className="relative">
+                            <button
+                              onClick={() => toggleDropdown(index)}
+                              className="action-button bg-gradient-to-r from-purple-500 to-indigo-600 text-white p-2 rounded-full"
+                              title="More Actions"
+                            >
+                              <FaEllipsisV size={16} />
+                            </button>
+
+                            {openDropdown === index && (
+                              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-[1000] py-2 transform translate-y-0">
                                 <button
                                   onClick={() => handleDownloadQR(file?.path)}
-                                  className="text-gray-700 block px-2 py-1 text-xs sm:text-sm w-full text-left"
-                                  title="Download QR code for this file?"
+                                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-50"
                                 >
-                                  <div className="flex items-center">
-                                    <FaDownload className="mr-1" /> Download QR
-                                  </div>
+                                  <FaQrcode className="mr-2 text-blue-500" />
+                                  Download QR
                                   <div
                                     ref={(el) =>
                                       (qrCodeRef.current[file?.path] = el)
@@ -199,51 +282,56 @@ const FilePreview = () => {
                                     <QRCode value={file?.path} />
                                   </div>
                                 </button>
-                                <button
-                                  onClick={() => handleCopyUrl(file?.path)}
-                                  className="text-gray-700 block px-2 py-1 text-xs sm:text-sm w-full text-left"
-                                  title="Copy URL to clipboard"
-                                >
-                                  <div className="flex items-center">
-                                    <FaCopy className="mr-1" /> Copy URL
+
+                                <div className="border-t border-gray-100 my-1"></div>
+
+                                <div className="px-4 py-2">
+                                  <p className="text-xs text-gray-500 mb-2">
+                                    Share via:
+                                  </p>
+                                  <div className="flex space-x-3">
+                                    <FacebookShareButton
+                                      url={file?.path}
+                                      className="share-button"
+                                    >
+                                      <FaFacebook
+                                        className="text-blue-600"
+                                        size={20}
+                                      />
+                                    </FacebookShareButton>
+                                    <TwitterShareButton
+                                      url={file?.path}
+                                      className="share-button"
+                                    >
+                                      <FaTwitter
+                                        className="text-blue-400"
+                                        size={20}
+                                      />
+                                    </TwitterShareButton>
+                                    <WhatsappShareButton
+                                      url={file?.path}
+                                      className="share-button"
+                                    >
+                                      <FaWhatsapp
+                                        className="text-green-500"
+                                        size={20}
+                                      />
+                                    </WhatsappShareButton>
                                   </div>
-                                </button>
+                                </div>
+
+                                <div className="border-t border-gray-100 my-1"></div>
+
                                 <button
                                   onClick={() => handleDelete(index)}
-                                  className="text-red-700 block px-2 py-1 text-xs sm:text-sm w-full text-left"
+                                  className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                                 >
-                                  <div className="flex items-center">
-                                    <FaTrash className="mr-1" /> Delete
-                                  </div>
+                                  <FaTrash className="mr-2" />
+                                  Delete File
                                 </button>
                               </div>
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="border px-2 py-2">
-                        <div className="flex space-x-2">
-                          <FacebookShareButton
-                            url={file?.path}
-                            className="w-full text-left"
-                            title="Share on Facebook"
-                          >
-                            <FaFacebook className="text-blue-600" size={24} />
-                          </FacebookShareButton>
-                          <TwitterShareButton
-                            url={file?.path}
-                            className="w-full text-left"
-                            title="Share on Twitter"
-                          >
-                            <FaTwitter className="text-blue-400" size={24} />
-                          </TwitterShareButton>
-                          <WhatsappShareButton
-                            url={file?.path}
-                            className="w-full text-left"
-                            title="Share on WhatsApp"
-                          >
-                            <FaWhatsapp className="text-green-500" size={24} />
-                          </WhatsappShareButton>
+                            )}
+                          </div>
                         </div>
                       </td>
                     </tr>
@@ -251,12 +339,13 @@ const FilePreview = () => {
                 </tbody>
               </table>
             </div>
-          )}
-        </div>
+          </div>
+        )}
+      </main>
 
-        <Footer />
-      </div>
-    </>
+      <Footer />
+      <ToastContainer position="bottom-right" />
+    </div>
   );
 };
 
