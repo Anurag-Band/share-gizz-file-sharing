@@ -1,32 +1,34 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { registerUser } from '../redux/slice/auth/authThunk';
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { HiEye, HiEyeOff } from "react-icons/hi";
+import { registerUser } from "../redux/slice/auth/authThunk";
 
 const Signup = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading } = useSelector((state) => state.auth);
 
-  const [formData,setFormData]=useState({
-    email:'',
-    fullname:'',
-    password:'',
-  })
+  const [formData, setFormData] = useState({
+    email: "",
+    fullname: "",
+    password: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleChange=(e)=>{
-   setFormData({
-    ...formData,
-    [e.target.name]:e.target.value,
-   })
-  }
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-  const handleSubmit=async (e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if(!formData.email || !formData.fullname || !formData.password){
-      toast.error('Please fill all the fields');
+    if (!formData.email || !formData.fullname || !formData.password) {
+      toast.error("Please fill all the fields");
       return;
     }
 
@@ -36,14 +38,14 @@ const Signup = () => {
         console.log(result);
         toast.error(result.payload);
       } else {
-        toast.success('Registration successful');
-        navigate('/dashboard');
+        toast.success("Registration successful");
+        navigate("/dashboard");
       }
     } catch (error) {
-      toast.error('Error During Registration');
+      toast.error("Error During Registration");
       console.log(error);
     }
-  }
+  };
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
       <div className="m-0 sm:m-12 bg-white shadow sm:rounded-lg flex justify-center flex-1">
@@ -56,8 +58,8 @@ const Signup = () => {
             /> */}
           </div>
           <div className="mt-12 flex flex-col items-center">
-            <h1 className="text-2xl xl:text-3xl font-extrabold">
-              Sign up for Share Gizz
+            <h1 className="text-2xl xl:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-700">
+              Sign up to Share Gizz
             </h1>
             <div className="w-full flex-1 mt-8">
               <div className="mx-auto max-w-xs">
@@ -77,14 +79,27 @@ const Signup = () => {
                   value={formData.email}
                   placeholder="Email"
                 />
-                <input
-                  className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-                  type="password"
-                  name="password"
-                  onChange={handleChange}
-                  value={formData.password}
-                  placeholder="Password"
-                />
+                <div className="relative mt-5">
+                  <input
+                    className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    onChange={handleChange}
+                    value={formData.password}
+                    placeholder="Password"
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <HiEyeOff className="h-5 w-5" />
+                    ) : (
+                      <HiEye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
                 <button
                   className="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
                   onClick={handleSubmit}
@@ -103,11 +118,16 @@ const Signup = () => {
                     <circle cx="8.5" cy="7" r="4" />
                     <path d="M20 8v6M23 11h-6" />
                   </svg>
-                  <span className="ml-3">{loading ? "Signing Up..." : "Sign Up"}</span>
+                  <span className="ml-3">
+                    {loading ? "Signing Up..." : "Sign Up"}
+                  </span>
                 </button>
                 <p className="mt-6 text-xs text-gray-600 text-center">
-                  Already have an account?{' '}
-                  <Link to="/login" className="text-indigo-500 hover:text-indigo-700 font-semibold">
+                  Already have an account?{" "}
+                  <Link
+                    to="/login"
+                    className="text-indigo-500 hover:text-indigo-700 font-semibold"
+                  >
                     Login here
                   </Link>
                 </p>
