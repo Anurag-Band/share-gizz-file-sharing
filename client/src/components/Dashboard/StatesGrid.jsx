@@ -116,12 +116,6 @@ const StatsGrid = () => {
               </span>
             </div>
           </div>
-
-          <div className="md:ml-auto flex flex-col items-center md:items-end mt-4 md:mt-0">
-            <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-full text-sm font-medium hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
-              Edit Profile
-            </button>
-          </div>
         </div>
       </div>
 
