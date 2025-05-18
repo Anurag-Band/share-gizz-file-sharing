@@ -90,7 +90,7 @@ const FileUpload = () => {
           </Link>
           <Link to={"/"}>
             <h1 className="text-lg font-bold lg:text-2xl font-serif">
-              Share Pod
+              Share Gizz
             </h1>
           </Link>
         </div>

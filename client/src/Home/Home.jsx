@@ -34,8 +34,12 @@ const Home = () => {
       >
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center">
-            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600">
-              Share Pod
+            <h1 className={`text-3xl font-bold bg-clip-text text-transparent ${
+              scrolled
+                ? "bg-gradient-to-r from-blue-500 to-indigo-600"
+                : "bg-gradient-to-r from-white to-blue-100"
+            }`}>
+              Share Gizz
             </h1>
             <p
               className={`ml-4 hidden md:block ${
@@ -150,7 +154,7 @@ const Home = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-700">
-              What makes Share Pod special?
+              What makes Share Gizz special?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Our platform is designed with simplicity and security in mind,
@@ -220,7 +224,7 @@ const Home = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-700">
-              How Share Pod works
+              How Share Gizz works
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Three simple steps to share your files with anyone, anywhere
@@ -310,7 +314,7 @@ const Home = () => {
                 Ready to start sharing?
               </h2>
               <p className="text-xl text-blue-100 mb-0 md:pr-10">
-                Join thousands of users who trust Share Pod for their file
+                Join thousands of users who trust Share Gizz for their file
                 sharing needs. Start uploading and sharing in seconds.
               </p>
             </div>
@@ -331,10 +335,10 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <h2 className="text-2xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500">
-                Share Pod
+                Share Gizz
               </h2>
               <p className="text-gray-400 mb-6 max-w-md">
-                Share Pod is the easiest way to share files with anyone. Secure,
+                Share Gizz is the easiest way to share files with anyone. Secure,
                 fast, and designed for seamless collaboration.
               </p>
               <div className="flex space-x-4">
@@ -442,7 +446,7 @@ const Home = () => {
 
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500">
             <p>
-              &copy; {new Date().getFullYear()} Share Pod. All rights reserved.
+              &copy; {new Date().getFullYear()} Share Gizz. All rights reserved.
             </p>
           </div>
         </div>
