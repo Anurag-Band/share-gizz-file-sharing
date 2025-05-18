@@ -220,12 +220,38 @@ const FileShow = () => {
                 <FaTimes size={20} />
               </button>
             </div>
-            <div className="border rounded-lg overflow-hidden bg-gray-100">
-              <iframe
-                src={previewFile.path}
-                title="File Preview"
-                className="w-full h-96 border-0"
-              ></iframe>
+            <div
+              className="border rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center"
+              style={{ height: "24rem" }}
+            >
+              {previewFile.type?.startsWith("image/") ? (
+                <img
+                  src={previewFile.path}
+                  alt={previewFile.name}
+                  className="max-h-full max-w-full object-contain"
+                />
+              ) : previewFile.type?.startsWith("video/") ? (
+                <video
+                  src={previewFile.path}
+                  controls
+                  className="max-h-full max-w-full"
+                />
+              ) : previewFile.type?.includes("pdf") ? (
+                <iframe
+                  src={previewFile.path}
+                  title="PDF Preview"
+                  className="w-full h-96 border-0"
+                />
+              ) : (
+                <div className="text-center p-6">
+                  <div className="text-6xl mb-4 flex justify-center">
+                    {getFileIcon(previewFile.type)}
+                  </div>
+                  <p className="text-gray-500">
+                    Preview not available for this file type
+                  </p>
+                </div>
+              )}
             </div>
             <div className="mt-4 flex justify-end">
               <button
