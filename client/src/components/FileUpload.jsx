@@ -183,24 +183,26 @@ const FileUpload = () => {
 
   return (
     <div className="flex flex-col justify-between min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      <header className="bg-gray-800 text-white py-4 px-4 md:px-8 lg:px-20 flex justify-between items-center">
-        <div className="flex items-center">
-          <Link to={"/"}>
-            <SiSharex className="h-8 w-8 mr-4" />
-          </Link>
-          <Link to={"/"}>
-            <h1 className="text-lg font-bold lg:text-2xl font-serif">
-              Share Gizz
-            </h1>
-          </Link>
-        </div>
-        <div className="flex space-x-4">
-          <Link
-            to="/dashboard"
-            className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 text-white px-4 py-2 rounded-md"
-          >
-            Dashboard
-          </Link>
+      <header className="bg-gradient-to-r from-blue-600 to-indigo-800 text-white py-4 px-4 md:px-8 lg:px-20">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="flex items-center">
+            <Link to={"/"}>
+              <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                Share Gizz
+              </h1>
+            </Link>
+            <p className="ml-4 hidden md:block text-blue-100">
+              Share files effortlessly, anywhere, anytime
+            </p>
+          </div>
+          <div className="flex space-x-4">
+            <Link
+              to="/dashboard"
+              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-4 py-2 rounded-full font-medium transition-all duration-300"
+            >
+              Dashboard
+            </Link>
+          </div>
         </div>
       </header>
 
