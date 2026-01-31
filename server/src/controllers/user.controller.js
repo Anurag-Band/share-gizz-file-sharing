@@ -1,13 +1,7 @@
 import { User } from "../models/user.models.js";
 import bcrypt from "bcryptjs";
-import express, { Router } from "express";
-
 import jwt from "jsonwebtoken";
-import { v4 as uuidv4 } from "uuid";
-
-const generateUniqueId = () => {
-  return uuidv4();
-};
+import { generateUniqueId } from "../utils/uuid.utils.js";
 
 // Function to create a new user
 const registerUser = async (req, res) => {
@@ -19,43 +13,18 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Email already in use." });
     }
 
-    if (!fullname || !email || !password) {
-      return res.status(400).json({ message: "All are required." });
-    }
+    const cleanedFullname = fullname.trim().replace(/\s+/g, "");
+    const username = `${cleanedFullname.substring(0, 4).toLowerCase()}${generateUniqueId().substring(0, 5)}`;
 
-    if (password.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 6 characters long." });
-    }
-
-    if (fullname.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "Fullname must be at least 6 characters long." });
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ message: "Invalid email format." });
-    }
- const cleanedFullname = fullname.trim().replace(/\s+/g, '');
-const username = `${cleanedFullname.substring(0, 4).toLowerCase()}${generateUniqueId().substring(0, 5)}`;
-
-
-   
-
-    const pic=Math.floor(Math.random()*100)+1;
-    const profilePic=`https://avatar.iran.liara.run/public/${pic}`
-
-
+    const pic = Math.floor(Math.random() * 100) + 1;
+    const profilePic = `https://avatar.iran.liara.run/public/${pic}`;
 
     const newUser = new User({
       fullname,
       username,
       email,
-        password,
-      profilePic
+      password,
+      profilePic,
     });
 
     await newUser.save();
@@ -106,7 +75,6 @@ const updateUser = async (req, res) => {
 
   try {
     const updatedFields = { username };
- 
 
     const updatedUser = await User.findByIdAndUpdate(userId, updatedFields, {
       new: true,
@@ -145,7 +113,6 @@ const loginUser = async (req, res) => {
       $or: [{ email: email }, { username: username }],
     });
 
-   
     if (!user) {
       return res.status(401).json({ message: "Invalid email or username" });
     }
@@ -185,7 +152,6 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: "Error logging in" });
   }
 };
-
 
 const verifyToken = (req, res, next) => {
   const token = req.headers["authorization"];

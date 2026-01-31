@@ -1,29 +1,20 @@
 import { File } from "../models/file.models.js";
 import bcrypt from "bcryptjs";
-import AWS from "aws-sdk";
-import nodemailer from "nodemailer";
 import shortid from "shortid";
 import QRCode from "qrcode";
 import { User } from "../models/user.models.js";
+import { uploadToS3 } from "../services/s3.service.js";
+import { sendShareEmail } from "../services/email.service.js";
 
 const uploadFiles = async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No files uploaded" });
   }
 
-  const { isPassword, password, hasExpiry, expiresAt, customFileName, userId } = req.body;
-
-  // If no userId is provided, return an error
-  if (!userId) {
-    return res.status(400).json({ error: "User ID is required" });
-  }
+  const { isPassword, password, hasExpiry, expiresAt, customFileName, userId } =
+    req.body;
 
   try {
-    const s3 = new AWS.S3({
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      region: process.env.AWS_REGION,
-    });
     const file = req.file;
     console.log("file: ", file);
 
@@ -38,18 +29,8 @@ const uploadFiles = async (req, res) => {
       : originalName;
     console.log(finalFileName);
 
-    const params = {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `file-share-app/${finalFileName}`, // <-- Folder path
-      Body: file.buffer, // ✅ Important: actual file content
-      ContentType: file.mimetype,
-      // ACL: 'public-read', // ✅ Important: set the file to be publicly readable
-    };
-
-    const s3Result = await s3.upload(params).promise();
-    if (s3Result.error) {
-      return res.status(500).json({ error: "Error uploading file to S3" });
-    }
+    const s3Result = await uploadToS3(file, finalFileName);
+    
     const fileUrl = s3Result.Location;
     console.log("File uploaded to S3:", fileUrl);
     const shortCode = shortid.generate();
@@ -361,44 +342,8 @@ const sendLinkEmail = async (req, res) => {
     const file = await File.findById(fileId);
     if (!file) return res.status(404).json({ error: "File not found" });
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST,
-      port: process.env.MAIL_PORT,
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
-      },
-    });
+    await sendShareEmail(email, file);
 
-    const mailOptions = {
-      from: `"File Share App" <${process.env.MAIL_USER}>`,
-      to: email,
-      subject: "Your Shared File Link",
-      html: `
-    <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-      <h2>📎 You've received a file!</h2>
-      <p>Hello,</p>
-      <p>You have been sent a file using <strong>File Share App</strong>.</p>
-      <p><strong>File Name:</strong> ${file.name}</p>
-      <p><strong>File Type:</strong> ${file.type}</p>
-      <p><strong>Size:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
-      <p><strong>Download Link:</strong></p>
-      <p><a href="${
-        file.path
-      }" target="_blank" style="color: #3366cc;">Click here to download your file</a></p>
-      ${
-        file.expiresAt
-          ? `<p><strong>Note:</strong> This link will expire on <strong>${new Date(
-              file.expiresAt
-            ).toLocaleString()}</strong>.</p>`
-          : ""
-      }
-      <p>Thank you for using File Share App!</p>
-    </div>
-  `,
-    };
-
-    await transporter.sendMail(mailOptions);
     res.status(200).json({ message: "Link sent successfully" });
   } catch (error) {
     console.error("Resend link error:", error);

@@ -1,5 +1,7 @@
 import { Router } from "express";
 import upload from "../middlewares/upload.middlewares.js";
+import { uploadFileValidator } from "../validators/file.validator.js";
+import { validate } from "../validators/user.validator.js"; // Reuse the general validate middleware
 import {
   deleteFile,
   downloadFile,
@@ -21,7 +23,7 @@ import {
 
 const router = Router();
 
-router.post("/upload", upload.single("file"), uploadFiles);
+router.post("/upload", upload.single("file"), uploadFileValidator, validate, uploadFiles);
 router.get("/download/:fileId", downloadFile);
 router.delete("/delete/:fileId", deleteFile);
 router.put("/update/:fileId", updateFileStatus);
