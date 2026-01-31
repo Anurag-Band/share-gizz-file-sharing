@@ -17,12 +17,12 @@ import {
   validate,
 } from "../validators/user.validator.js";
 
-router.get("/user", getUsers);
-router.get("/user/:userId", getUserById);
+router.get("/user", authenticate, getUsers);
+router.get("/user/:userId", authenticate, getUserById);
 router.post("/register", registerValidator, validate, registerUser);
 router.post("/login", loginValidator, validate, loginUser);
-router.get("/logout", logoutUser);
-router.put("/user/:userId", updateUser);
-router.delete("/user/:userId", deleteUser);
+router.get("/logout", authenticate, logoutUser);
+router.put("/user/:userId", authenticate, updateUser);
+router.delete("/user/:userId", authenticate, deleteUser);
 
 export default router;
